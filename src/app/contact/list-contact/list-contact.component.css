@@ -1,0 +1,19 @@
+.table-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.buttons {
+  display: flex;
+  gap: 5px;
+}
+
+.title {
+  color: var(--orange-color);
+}
+
+th {
+  background-color: var(--blue-color) !important;
+  color: var(--white-color) !important;
+}

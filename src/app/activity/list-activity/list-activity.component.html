@@ -1,0 +1,92 @@
+<p-confirmDialog></p-confirmDialog>
+
+<div class="table-header">
+  <h1 class="title">Activity List</h1>
+
+  <div class="buttons">
+    <button type="button" class="btn-primary" [routerLink]="['../', 'new']">
+      Add Activity
+    </button>
+  </div>
+</div>
+
+<p-table
+  #dt
+  [columns]="cols"
+  [value]="activities"
+  [paginator]="true"
+  [rows]="10"
+  [resizableColumns]="true"
+  [rowsPerPageOptions]="[10, 20, 30, 40, 50]"
+>
+  <ng-template pTemplate="caption">
+    <div style="text-align: left">
+      <input
+        type="text"
+        pInputText
+        size="50"
+        placeholder="Search"
+        (input)="dt.filterGlobal($event.target.value, 'contains')"
+        style="width: auto"
+      />
+    </div>
+  </ng-template>
+  <ng-template pTemplate="header">
+    <tr>
+      <th
+        *ngFor="let col of cols"
+        pResizableColumn
+        [pSortableColumn]="col.field"
+      >
+        {{ col.header }}
+        <p-sortIcon
+          [field]="col.field"
+          ariaLabel="Activate to sort"
+          ariaLabelDesc="Activate to sort in descending order"
+          ariaLabelAsc="Activate to sort in ascending order"
+        ></p-sortIcon>
+      </th>
+
+      <th>Actions</th>
+    </tr>
+  </ng-template>
+
+  <ng-template pTemplate="body" let-activity>
+    <tr>
+      <td *ngFor="let col of cols" class="ui-resizable-column">
+        <ng-container [ngSwitch]="col.field">
+          <ng-container *ngSwitchCase="'date'">
+            {{ activity[col.field] | date }}
+          </ng-container>
+          <ng-container *ngSwitchCase="'participants'">
+            <ul>
+              <li *ngFor="let p of activity[col.field]">
+                {{ p.fullName() }}
+              </li>
+            </ul>
+          </ng-container>
+          <ng-container *ngSwitchDefault>
+            {{ activity[col.field] }}
+          </ng-container>
+        </ng-container>
+      </td>
+      <td>
+        <div class="buttons">
+          <button
+            pButton
+            type="button"
+            icon="pi pi-pencil"
+            class="ui-button-primary"
+          ></button>
+          <button
+            pButton
+            type="button"
+            icon="pi pi-trash"
+            class="ui-button-danger"
+            (click)="onDeleteActivity(activity.id)"
+          ></button>
+        </div>
+      </td>
+    </tr>
+  </ng-template>
+</p-table>

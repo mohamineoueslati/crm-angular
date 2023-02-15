@@ -1,0 +1,113 @@
+<h1 class="title">Add Activity</h1>
+
+<div class="grid">
+  <div class="col-8">
+    <form [formGroup]="activityForm" (ngSubmit)="onSubmit()">
+      <div class="formgrid grid">
+        <div class="col field">
+          <label for="date">Date *</label>
+          <p-calendar
+            id="date"
+            styleClass="w-full"
+            inputStyleClass="w-28rem"
+            showButtonBar="true"
+            showIcon="true"
+            formControlName="date"
+            required
+          ></p-calendar>
+          <div class="mt-1">
+            <p-message
+              *ngIf="
+                (isFormSubmitted || getFormControl('date').dirty) &&
+                getFormControl('date').invalid
+              "
+              [text]="getValidationMessages(getFormControl('date'), 'Date')"
+              severity="error"
+            ></p-message>
+          </div>
+        </div>
+
+        <div class="col field">
+          <label for="activity-type">Activity Type *</label>
+          <p-dropdown
+            id="activity-type"
+            styleClass="w-full"
+            [options]="activityTypeOptions"
+            formControlName="activityType"
+            required
+          ></p-dropdown>
+          <div class="mt-1">
+            <p-message
+              *ngIf="
+                (isFormSubmitted || getFormControl('activityType').dirty) &&
+                getFormControl('activityType').invalid
+              "
+              [text]="
+                getValidationMessages(
+                  getFormControl('activityType'),
+                  'Activity Type'
+                )
+              "
+              severity="error"
+            ></p-message>
+          </div>
+        </div>
+      </div>
+
+      <div class="formgrid grid">
+        <div class="col field">
+          <label for="subject">Subject</label>
+          <input
+            class="w-30rem"
+            pInputText
+            type="text"
+            id="subject"
+            formControlName="subject"
+          />
+        </div>
+
+        <div class="col field">
+          <label for="participants">Participants</label>
+          <p-multiSelect
+            [options]="participantsOptions"
+            styleClass="w-full"
+            defaultLabel="Choose participants"
+            formControlName="participants"
+          ></p-multiSelect>
+        </div>
+      </div>
+
+      <div class="formgrid grid">
+        <div class="col field">
+          <label for="note">Note</label>
+          <input
+            type="text"
+            id="note"
+            class="w-full"
+            pInputText
+            formControlName="note"
+          />
+        </div>
+      </div>
+
+      <div class="formgrid grid">
+        <div class="col field">
+          <label for="documents">Documents</label>
+          <input
+            type="file"
+            id="documents"
+            multiple
+            formControlName="documents"
+          />
+        </div>
+      </div>
+
+      <div class="grid">
+        <div class="col text-right">
+          <button type="reset" class="btn-secondary mr-1">Cancel</button>
+          <button type="submit" class="btn-primary">Save</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

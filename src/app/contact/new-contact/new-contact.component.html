@@ -1,0 +1,229 @@
+<h1 class="title">
+  {{ isEditMode ? "Edit Contact " + contact.fullName() : "Add Contact" }}
+</h1>
+
+<div class="grid">
+  <div class="sidenav col-2">
+    <a [routerLink]="isEditMode ? [] : ['../', 'add']">Profile</a>
+    <a routerLink="/activities/list">Activties</a>
+  </div>
+  <div class="col-2">
+    <p-card header="Upload your photo" styleClass="ui-card-shadow">
+      <p-header>
+        <img [src]="previewImgSrc || defaultPrevImgSrc" alt="avatar" />
+      </p-header>
+      <p-footer>
+        <input
+          #file
+          type="file"
+          name="photo"
+          id="photo"
+          accept="image/*"
+          (change)="previewImg(file.files)"
+        />
+      </p-footer>
+    </p-card>
+  </div>
+  <div class="col-6">
+    <form #contactForm="ngForm" (ngSubmit)="onSubmit(contactForm)">
+      <p-fieldset legend="Main Information">
+        <div class="formgrid grid">
+          <div class="col field">
+            <label for="firstName">First Name *</label>
+            <input
+              class="w-full"
+              pInputText
+              type="text"
+              name="firstName"
+              id="firstName"
+              required
+              [ngModel]="contact.firstName"
+              #firstName="ngModel"
+            />
+            <div class="mt-1">
+              <p-message
+                *ngIf="
+                  (isFormSubmitted || firstName.dirty) && firstName.invalid
+                "
+                [text]="getValidationMessages(firstName, 'First Name')"
+                severity="error"
+              ></p-message>
+            </div>
+          </div>
+
+          <div class="col field">
+            <label for="lastName">Last Name *</label>
+            <input
+              class="w-full"
+              pInputText
+              type="text"
+              name="lastName"
+              id="lastName"
+              required
+              [ngModel]="contact.lastName"
+              #lastName="ngModel"
+            />
+            <div class="mt-1">
+              <p-message
+                *ngIf="(isFormSubmitted || lastName.dirty) && lastName.invalid"
+                [text]="getValidationMessages(lastName, 'Last Name')"
+                severity="error"
+              ></p-message>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid formgrid">
+          <div class="col field">
+            <label for="email">Email</label>
+            <input
+              class="w-full"
+              pInputText
+              type="email"
+              name="email"
+              id="email"
+              [ngModel]="contact.email"
+              email
+            />
+          </div>
+
+          <div class="col field">
+            <label for="phone">Phone</label>
+            <input
+              class="w-full"
+              pInputText
+              type="text"
+              name="phone"
+              id="phone"
+              [ngModel]="contact.phone"
+            />
+          </div>
+        </div>
+
+        <div class="formgrid grid">
+          <div class="col field">
+            <label for="contact-owner">Contact Owner</label>
+            <p-dropdown
+              id="contact-owner"
+              name="contactOwner"
+              [options]="contactOwnerOptions"
+              [showClear]="true"
+              styleClass="w-full"
+              placeholder="Select Contact Owner"
+              [ngModel]="contact.contactOwner"
+              autoDisplayFirst="false"
+            ></p-dropdown>
+          </div>
+
+          <div class="col field">
+            <label for="company">Company</label>
+            <input
+              class="w-full"
+              pInputText
+              type="text"
+              name="company"
+              id="company"
+              [ngModel]="contact.company"
+            />
+          </div>
+        </div>
+
+        <div class="formgrid grid">
+          <div class="col-6 field">
+            <label for="job-title">Job Title</label>
+            <p-dropdown
+              id="job-title"
+              name="jobTitle"
+              [options]="jobTitleOptions"
+              [showClear]="true"
+              styleClass="w-full"
+              placeholder="Select Job Title"
+              [ngModel]="contact.jobTitle"
+            ></p-dropdown>
+          </div>
+        </div>
+      </p-fieldset>
+
+      <p-fieldset legend="Address">
+        <div id="address" class="field">
+          <label for="address">Address</label>
+          <input
+            class="w-full"
+            pInputText
+            type="text"
+            name="address"
+            id="address"
+            [ngModel]="contact.address?.address"
+          />
+        </div>
+
+        <div class="formgrid grid">
+          <div class="col field">
+            <label for="contry">Country</label>
+            <input
+              class="w-full"
+              pInputText
+              type="text"
+              name="country"
+              id="country"
+              [ngModel]="contact.address?.country"
+            />
+          </div>
+
+          <div class="col field">
+            <label for="city">City</label>
+            <input
+              class="w-full"
+              pInputText
+              type="text"
+              name="city"
+              id="city"
+              [ngModel]="contact.address?.city"
+            />
+          </div>
+        </div>
+
+        <div class="formgrid grid">
+          <div class="col field">
+            <label for="zip">Zip Code</label>
+            <input
+              class="w-full"
+              pInputText
+              type="number"
+              name="zip"
+              id="zip"
+              [ngModel]="contact.address?.zipCode"
+            />
+          </div>
+
+          <div class="col field">
+            <label for="state">State</label>
+            <input
+              class="w-full"
+              pInputText
+              type="text"
+              name="state"
+              id="state"
+              [ngModel]="contact.address?.state"
+            />
+          </div>
+        </div>
+      </p-fieldset>
+
+      <div class="mt-3 grid">
+        <div class="col">
+          <button class="btn-primary">Send Email</button>
+        </div>
+
+        <div class="col">
+          <div class="grid">
+            <div class="col text-right">
+              <button type="reset" class="btn-secondary mr-1">Cancel</button>
+              <button type="submit" class="btn-primary">Save</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
