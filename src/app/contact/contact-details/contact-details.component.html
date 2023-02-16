@@ -4,8 +4,10 @@
 
 <div class="grid">
   <div class="sidenav col-2">
-    <a [routerLink]="['profile']">Profile</a>
-    <a [routerLink]="['activities']">Activties</a>
+    <a [routerLink]="isEditMode ? ['profile'] : ['new']">Profile</a>
+    <a [routerLink]="isEditMode ? ['activities'] : '/activities/list'"
+      >Activties</a
+    >
   </div>
 
   <div class="col">
