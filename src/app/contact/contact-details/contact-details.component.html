@@ -1,0 +1,14 @@
+<h1 class="title">
+  {{ isEditMode ? "Edit Contact " + contact.fullName() : "Add Contact" }}
+</h1>
+
+<div class="grid">
+  <div class="sidenav col-2">
+    <a [routerLink]="['profile']">Profile</a>
+    <a [routerLink]="['activities']">Activties</a>
+  </div>
+
+  <div class="col">
+    <router-outlet></router-outlet>
+  </div>
+</div>

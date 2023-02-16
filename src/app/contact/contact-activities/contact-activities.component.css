@@ -1,0 +1,9 @@
+.table-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.title {
+  color: var(--orange-color);
+}

@@ -1,12 +1,4 @@
-<h1 class="title">
-  {{ isEditMode ? "Edit Contact " + contact.fullName() : "Add Contact" }}
-</h1>
-
 <div class="grid">
-  <div class="sidenav col-2">
-    <a [routerLink]="isEditMode ? [] : ['../', 'add']">Profile</a>
-    <a routerLink="/activities/list">Activties</a>
-  </div>
   <div class="col-2">
     <p-card header="Upload your photo" styleClass="ui-card-shadow">
       <p-header>

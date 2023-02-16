@@ -33,7 +33,7 @@ export class NewContactComponent implements OnInit {
   }
 
   ngOnInit() {
-    const id = this.route.snapshot.params["id"];
+    const id = this.route.parent.snapshot.params["id"];
     this.isEditMode = !isNaN(id);
 
     if (this.isEditMode) {

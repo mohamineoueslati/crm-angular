@@ -13,11 +13,20 @@ import { FormsModule } from "@angular/forms";
 import { MessageModule } from "primeng/message";
 import { CardModule } from "primeng/card";
 import { ConfirmDialogModule } from "primeng/confirmdialog";
+import { ContactDetailsComponent } from "./contact-details/contact-details.component";
+import { ContactActivitiesComponent } from "./contact-activities/contact-activities.component";
+import { SharedModule } from "../shared/shared.module";
 
 @NgModule({
-  declarations: [ListContactComponent, NewContactComponent],
+  declarations: [
+    ListContactComponent,
+    NewContactComponent,
+    ContactDetailsComponent,
+    ContactActivitiesComponent,
+  ],
   imports: [
     CommonModule,
+    SharedModule,
     ContactRoutingModule,
     TableModule,
     ButtonModule,
