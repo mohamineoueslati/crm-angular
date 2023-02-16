@@ -1,10 +1,5 @@
 <div class="sidenav">
-  <a
-    routerLink="/"
-    routerLinkActive="active"
-    [routerLinkActiveOptions]="{ exact: true }"
-    >CRM</a
-  >
+  <a (dblclick)="onDblClick()">CRM</a>
   <a routerLink="/contacts" routerLinkActive="active">Contacts</a>
   <a routerLink="/activities" routerLinkActive="active">Activities</a>
 </div>

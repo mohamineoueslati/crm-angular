@@ -37,7 +37,7 @@ export class ContactActivitiesComponent implements OnInit {
 
   onDeleteActivity(id: number): void {
     this.confirmationService.confirm({
-      message: "Do you want to delete this contact?",
+      message: "Do you want to delete this activity?",
       header: "Delete Confirmation",
       icon: "pi pi-info-circle",
       accept: () => {
