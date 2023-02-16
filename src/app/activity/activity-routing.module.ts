@@ -9,6 +9,10 @@ const routes: Routes = [
     path: "new",
     component: NewActivityComponent,
   },
+  {
+    path: "edit/:id",
+    component: NewActivityComponent,
+  },
   { path: "", redirectTo: "list", pathMatch: "full" },
 ];
 

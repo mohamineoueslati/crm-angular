@@ -22,6 +22,8 @@ export class NewActivityComponent implements OnInit {
   activityTypeOptions: SelectItem[] = [];
   participantsOptions: SelectItem[] = [];
   isFormSubmitted = false;
+  isEditMode = false;
+  activity: Activity;
 
   constructor(
     private activityService: ActivityService,
@@ -31,23 +33,20 @@ export class NewActivityComponent implements OnInit {
     private route: ActivatedRoute,
     private validationMessageService: ValidationMessageService
   ) {
-    this.buildForm();
-
-    this.activityTypeOptions = [
-      { label: "Appel", value: "Appel" },
-      { label: "Diner", value: "Diner" },
-      { label: "Email", value: "Email" },
-      { label: "Comité de gestion", value: "Comité de gestion" },
-      { label: "Réunion", value: "Réunion" },
-      { label: "Note", value: "Note" },
-    ];
-
-    this.participantsOptions = this.contactService.contacts.map((c) => {
-      return { label: c.fullName(), value: c };
-    });
+    this.buildActivityTypeOptions();
+    this.buildParticipantsOptions();
   }
 
-  ngOnInit() {}
+  ngOnInit() {
+    const id = this.route.snapshot.params["id"];
+    this.isEditMode = !isNaN(id);
+
+    if (this.isEditMode) {
+      this.activity = this.activityService.getActivity(+id);
+    }
+
+    this.buildForm();
+  }
 
   onSubmit() {
     this.isFormSubmitted = true;
@@ -62,9 +61,14 @@ export class NewActivityComponent implements OnInit {
         values["subject"]
       );
 
-      this.activityService.addActivity(newActivity);
-
-      this.router.navigate(["../", "list"], { relativeTo: this.route });
+      if (this.isEditMode) {
+        newActivity.id = this.activity.id;
+        this.activityService.updateActivity(newActivity);
+        this.router.navigateByUrl("/activities/list");
+      } else {
+        this.activityService.addActivity(newActivity);
+        this.router.navigate(["../", "list"], { relativeTo: this.route });
+      }
     }
   }
 
@@ -75,21 +79,41 @@ export class NewActivityComponent implements OnInit {
     return null;
   }
 
-  getValidationMessages(state: any, fieldName: string) {
+  getValidationMessages(state: any, fieldName: string): string[] {
     return this.validationMessageService.getValidationMessages(
       state,
       fieldName
     );
   }
 
-  private buildForm() {
+  private buildForm(): void {
     this.activityForm = this.fb.group({
-      date: ["", Validators.required],
-      activityType: ["", Validators.required],
-      subject: [""],
-      participants: [null],
-      note: [""],
-      documents: [null],
+      date: [this.activity ? this.activity.date : "", Validators.required],
+      activityType: [
+        this.activity ? this.activity.activityType : "",
+        Validators.required,
+      ],
+      subject: [this.activity ? this.activity.subject : ""],
+      participants: [this.activity ? this.activity.participants : []],
+      note: [this.activity ? this.activity.note : ""],
+      documents: [this.activity ? this.activity.documents : []],
+    });
+  }
+
+  private buildActivityTypeOptions(): void {
+    this.activityTypeOptions = [
+      { label: "Appel", value: "Appel" },
+      { label: "Diner", value: "Diner" },
+      { label: "Email", value: "Email" },
+      { label: "Comité de gestion", value: "Comité de gestion" },
+      { label: "Réunion", value: "Réunion" },
+      { label: "Note", value: "Note" },
+    ];
+  }
+
+  private buildParticipantsOptions(): void {
+    this.participantsOptions = this.contactService.contacts.map((c) => {
+      return { label: c.fullName(), value: c };
     });
   }
 }
