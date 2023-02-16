@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, EventEmitter, OnInit, Output } from "@angular/core";
 import { ConfirmationService } from "primeng/api";
 import { Activity } from "src/app/models/activity.model";
 import { ActivityService } from "src/app/services/activity.service";

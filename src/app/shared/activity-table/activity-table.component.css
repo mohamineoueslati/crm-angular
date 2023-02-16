@@ -1,0 +1,9 @@
+th {
+  background-color: var(--blue-color) !important;
+  color: var(--white-color) !important;
+}
+
+.buttons {
+  display: flex;
+  gap: 5px;
+}
