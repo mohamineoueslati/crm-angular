@@ -1,6 +1,6 @@
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
-import { Contact } from "src/app/models/contact.model";
+import { Contact, ContactResponse } from "src/app/models/contact.model";
 import { ContactService } from "src/app/services/contact.service";
 
 @Component({
@@ -10,7 +10,7 @@ import { ContactService } from "src/app/services/contact.service";
 })
 export class ContactDetailsComponent implements OnInit {
   isEditMode = false;
-  contact: Contact;
+  contact: ContactResponse = new ContactResponse();
 
   constructor(
     private route: ActivatedRoute,
@@ -22,7 +22,13 @@ export class ContactDetailsComponent implements OnInit {
     this.isEditMode = !isNaN(id);
 
     if (this.isEditMode) {
-      this.contact = this.contactService.getContact(+id);
+      this.contactService
+        .getContact(+id)
+        .subscribe((contact) => (this.contact = contact));
     }
+  }
+
+  getContactFullName(): string {
+    return this.contactService.getContactFullName(this.contact);
   }
 }

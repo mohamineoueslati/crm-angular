@@ -1,6 +1,6 @@
 import { Component, OnInit } from "@angular/core";
 import { ConfirmationService } from "primeng/api";
-import { Contact } from "src/app/models/contact.model";
+import { Contact, ContactResponse } from "src/app/models/contact.model";
 import { ContactService } from "src/app/services/contact.service";
 
 @Component({
@@ -9,7 +9,7 @@ import { ContactService } from "src/app/services/contact.service";
   styleUrls: ["./list-contact.component.css"],
 })
 export class ListContactComponent implements OnInit {
-  contacts: Contact[] = [];
+  contacts: ContactResponse[] = [];
 
   cols: { field: string; header: string }[];
 
@@ -29,7 +29,13 @@ export class ListContactComponent implements OnInit {
       { field: "contactOwner", header: "Contact Owner" },
     ];
 
-    this.contacts = this.contactService.contacts;
+    this.contactService.getContacts().subscribe((contacts) => {
+      this.contacts = contacts;
+    });
+  }
+
+  getContactFullName(contact: Contact): string {
+    return this.contactService.getContactFullName(contact);
   }
 
   onDeleteContact(id: number): void {
@@ -38,8 +44,15 @@ export class ListContactComponent implements OnInit {
       header: "Delete Confirmation",
       icon: "pi pi-info-circle",
       accept: () => {
-        this.contactService.deleteContact(id);
+        this.contactService
+          .deleteContact(id)
+          .subscribe((_) => this.removeContact(id));
       },
     });
+  }
+
+  private removeContact(id: number): void {
+    const idx = this.contacts.findIndex((c) => c.id === id);
+    this.contacts.splice(idx, 1);
   }
 }

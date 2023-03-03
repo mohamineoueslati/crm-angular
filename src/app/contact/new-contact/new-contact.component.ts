@@ -3,9 +3,14 @@ import { NgForm } from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
 import { SelectItem } from "primeng/components/common/selectitem";
 import { Address } from "src/app/models/address.model";
-import { Contact } from "src/app/models/contact.model";
+import {
+  Contact,
+  ContactRequest,
+  ContactResponse,
+} from "src/app/models/contact.model";
 import { ContactService } from "src/app/services/contact.service";
 import { ValidationMessageService } from "src/app/services/validation-message.service";
+import { map } from "rxjs/operators";
 
 @Component({
   selector: "app-new-contact",
@@ -20,7 +25,8 @@ export class NewContactComponent implements OnInit {
     "https://cdn.icon-icons.com/icons2/1378/PNG/512/avatardefault_92824.png";
   previewImgSrc = "";
   isEditMode = false;
-  contact: Contact;
+  contactReq: ContactRequest = new ContactRequest();
+  contactRes: ContactResponse = new ContactResponse();
 
   constructor(
     private contactService: ContactService,
@@ -37,23 +43,25 @@ export class NewContactComponent implements OnInit {
     this.isEditMode = !isNaN(id);
 
     if (this.isEditMode) {
-      this.contact = this.contactService.getContact(+id);
-    } else {
-      this.contact = new Contact("", "");
+      this.contactService
+        .getContact(+id)
+        .subscribe((contact) => (this.contactRes = contact));
     }
   }
 
   onSubmit(f: NgForm) {
     this.isFormSubmitted = true;
     if (f.valid) {
-      this.contact.firstName = f.value["firstName"];
-      this.contact.lastName = f.value["lastName"];
-      this.contact.email = f.value["email"];
-      this.contact.phone = f.value["phone"];
-      this.contact.jobTitle = f.value["jobTitle"];
-      this.contact.company = f.value["company"];
-      this.contact.contactOwner = f.value["contactOwner"];
-      this.contact.address = new Address(
+      this.contactReq.id = this.contactRes.id;
+      this.contactReq.firstName = f.value["firstName"];
+      this.contactReq.lastName = f.value["lastName"];
+      this.contactReq.email = f.value["email"];
+      this.contactReq.phone = f.value["phone"];
+      this.contactReq.jobTitle = f.value["jobTitle"];
+      this.contactReq.company = f.value["company"];
+      this.contactReq.contactOwnerId = f.value["contactOwner"];
+      this.contactReq.address = new Address(
+        this.contactRes.id,
         f.value["city"],
         f.value["address"],
         f.value["country"],
@@ -62,12 +70,14 @@ export class NewContactComponent implements OnInit {
       );
 
       if (this.isEditMode) {
-        this.contactService.updateContact(this.contact);
+        this.contactService
+          .updateContact(this.contactReq)
+          .subscribe((_) => this.navigateToContactList());
       } else {
-        this.contactService.addContact(this.contact);
+        this.contactService
+          .addContact(this.contactReq)
+          .subscribe((_) => this.navigateToContactList());
       }
-
-      this.router.navigateByUrl("/contacts/list");
     }
   }
 
@@ -93,15 +103,26 @@ export class NewContactComponent implements OnInit {
   }
 
   private buildContactOwnerOptions(): void {
-    this.contactOwnerOptions = this.contactService.contacts.map((c) => {
-      return { label: c.fullName(), value: c.fullName() };
-    });
+    this.contactService
+      .getContacts()
+      .pipe(
+        map((contacts) => {
+          return contacts.map((c) => {
+            return { label: `${c.firstName} ${c.lastName}`, value: c.id };
+          });
+        })
+      )
+      .subscribe((contacts) => (this.contactOwnerOptions = contacts));
   }
 
   private buildJobTitleOptions(): void {
     this.jobTitleOptions = [
       { label: "CEO", value: "CEO" },
-      { label: "Software Engineer", value: "Software Engineer" },
+      { label: "Software Engineer", value: "SOFTWARE_ENGINEER" },
     ];
+  }
+
+  private navigateToContactList() {
+    this.router.navigateByUrl("/contacts/list");
   }
 }

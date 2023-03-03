@@ -49,7 +49,7 @@
           <ng-container *ngSwitchCase="'participants'">
             <ul>
               <li *ngFor="let p of activity[col.field]">
-                {{ p.fullName() }}
+                {{ getContactFullName(p) }}
               </li>
             </ul>
           </ng-container>

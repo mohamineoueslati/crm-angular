@@ -54,10 +54,15 @@
     </tr>
   </ng-template>
 
-  <ng-template pTemplate="body" let-contact>
+  <ng-template pTemplate="body" let-contact let-idx="rowIndex">
     <tr>
       <td *ngFor="let col of cols" class="ui-resizable-column">
-        {{ contact[col.field] }}
+        <div *ngIf="col.field != 'contactOwner'; else notContactOwner">
+          {{ contact[col.field] }}
+        </div>
+        <ng-template #notContactOwner>
+          {{ getContactFullName(contact[col.field]) }}
+        </ng-template>
       </td>
       <td>
         <div class="buttons">

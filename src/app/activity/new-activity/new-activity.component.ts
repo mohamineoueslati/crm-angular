@@ -7,7 +7,11 @@ import {
 } from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
 import { SelectItem } from "primeng/components/common/selectitem";
-import { Activity } from "src/app/models/activity.model";
+import { map } from "rxjs/operators";
+import {
+  ActivityRequest,
+  ActivityResponse,
+} from "src/app/models/activity.model";
 import { ActivityService } from "src/app/services/activity.service";
 import { ContactService } from "src/app/services/contact.service";
 import { ValidationMessageService } from "src/app/services/validation-message.service";
@@ -23,7 +27,7 @@ export class NewActivityComponent implements OnInit {
   participantsOptions: SelectItem[] = [];
   isFormSubmitted = false;
   isEditMode = false;
-  activity: Activity;
+  activityRes: ActivityResponse;
 
   constructor(
     private activityService: ActivityService,
@@ -33,6 +37,7 @@ export class NewActivityComponent implements OnInit {
     private route: ActivatedRoute,
     private validationMessageService: ValidationMessageService
   ) {
+    this.initForm();
     this.buildActivityTypeOptions();
     this.buildParticipantsOptions();
   }
@@ -42,32 +47,38 @@ export class NewActivityComponent implements OnInit {
     this.isEditMode = !isNaN(id);
 
     if (this.isEditMode) {
-      this.activity = this.activityService.getActivity(+id);
+      this.activityService.getActivity(+id).subscribe((activity) => {
+        this.activityRes = activity;
+        this.setFormValues();
+      });
     }
-
-    this.buildForm();
   }
 
   onSubmit() {
     this.isFormSubmitted = true;
     if (this.activityForm.valid) {
       const values = this.activityForm.value;
-      const newActivity = new Activity(
+      const newActivity = new ActivityRequest(
+        null,
         values["date"],
         values["activityType"],
-        values["participants"],
         values["note"],
         values["documents"],
-        values["subject"]
+        values["subject"],
+        values["participants"]
       );
 
       if (this.isEditMode) {
-        newActivity.id = this.activity.id;
-        this.activityService.updateActivity(newActivity);
-        this.router.navigateByUrl("/activities/list");
+        newActivity.id = this.activityRes.id;
+        this.activityService
+          .updateActivity(newActivity)
+          .subscribe((_) => this.router.navigateByUrl("/activities/list"));
       } else {
-        this.activityService.addActivity(newActivity);
-        this.router.navigate(["../", "list"], { relativeTo: this.route });
+        this.activityService
+          .addActivity(newActivity)
+          .subscribe((_) =>
+            this.router.navigate(["../", "list"], { relativeTo: this.route })
+          );
       }
     }
   }
@@ -86,34 +97,51 @@ export class NewActivityComponent implements OnInit {
     );
   }
 
-  private buildForm(): void {
+  private initForm(): void {
     this.activityForm = this.fb.group({
-      date: [this.activity ? this.activity.date : "", Validators.required],
-      activityType: [
-        this.activity ? this.activity.activityType : "",
-        Validators.required,
-      ],
-      subject: [this.activity ? this.activity.subject : ""],
-      participants: [this.activity ? this.activity.participants : []],
-      note: [this.activity ? this.activity.note : ""],
-      documents: [this.activity ? this.activity.documents : []],
+      date: [new Date(), Validators.required],
+      activityType: ["", Validators.required],
+      subject: [""],
+      participants: [[]],
+      note: [""],
+      documents: [[]],
+    });
+  }
+
+  private setFormValues(): void {
+    this.activityForm.setValue({
+      date: new Date(this.activityRes.date),
+      activityType: this.activityRes.activityType,
+      subject: this.activityRes.subject,
+      participants: this.activityRes.participants
+        ? this.activityRes.participants.map((p) => p.id)
+        : [],
+      note: this.activityRes.note,
+      documents: this.activityRes.documents ? this.activityRes.documents : [],
     });
   }
 
   private buildActivityTypeOptions(): void {
     this.activityTypeOptions = [
-      { label: "Appel", value: "Appel" },
-      { label: "Diner", value: "Diner" },
-      { label: "Email", value: "Email" },
-      { label: "Comité de gestion", value: "Comité de gestion" },
-      { label: "Réunion", value: "Réunion" },
-      { label: "Note", value: "Note" },
+      { label: "Appel", value: "APPEL" },
+      { label: "Diner", value: "DINER" },
+      { label: "Email", value: "EMAIL" },
+      { label: "Comité de gestion", value: "COMITE_DE_GESTION" },
+      { label: "Réunion", value: "REUNION" },
+      { label: "Note", value: "NOTE" },
     ];
   }
 
   private buildParticipantsOptions(): void {
-    this.participantsOptions = this.contactService.contacts.map((c) => {
-      return { label: c.fullName(), value: c };
-    });
+    this.contactService
+      .getContacts()
+      .pipe(
+        map((contacts) => {
+          return contacts.map((c) => {
+            return { label: `${c.firstName} ${c.lastName}`, value: c.id };
+          });
+        })
+      )
+      .subscribe((contacts) => (this.participantsOptions = contacts));
   }
 }

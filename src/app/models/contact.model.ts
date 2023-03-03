@@ -1,25 +1,46 @@
 import { Address } from "./address.model";
 
-export class Contact {
-  private _id: number;
+export abstract class Contact {
   constructor(
-    public firstName: string,
-    public lastName: string,
+    public id?: number,
+    public firstName?: string,
+    public lastName?: string,
     public email?: string,
     public phone?: string,
     public jobTitle?: string,
     public company?: string,
-    public contactOwner?: string,
     public address?: Address
+  ) {}
+}
+
+export class ContactRequest extends Contact {
+  constructor(
+    id?: number,
+    firstName?: string,
+    lastName?: string,
+    email?: string,
+    phone?: string,
+    jobTitle?: string,
+    company?: string,
+    address?: Address,
+    public contactOwnerId?: number
   ) {
-    this._id = Math.floor(Math.random() * 1000);
+    super(id, firstName, lastName, email, phone, jobTitle, company, address);
   }
+}
 
-  public fullName(): string {
-    return `${this.firstName} ${this.lastName}`;
-  }
-
-  get id(): number {
-    return this._id;
+export class ContactResponse extends Contact {
+  constructor(
+    id?: number,
+    firstName?: string,
+    lastName?: string,
+    email?: string,
+    phone?: string,
+    jobTitle?: string,
+    company?: string,
+    address?: Address,
+    public contactOwner?: ContactResponse
+  ) {
+    super(id, firstName, lastName, email, phone, jobTitle, company, address);
   }
 }

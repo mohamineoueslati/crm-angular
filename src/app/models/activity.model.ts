@@ -1,24 +1,40 @@
 import { Contact } from "./contact.model";
 
-export class Activity {
-  private _id: number;
-
+export abstract class Activity {
   constructor(
-    public date: Date,
-    public activityType: string,
-    public participants: Contact[],
-    public note: string[],
-    public documents: string[],
+    public id?: number,
+    public date?: Date,
+    public activityType?: string,
+    public note?: string,
+    public documents?: string[],
     public subject?: string
+  ) {}
+}
+
+export class ActivityRequest extends Activity {
+  constructor(
+    id?: number,
+    date?: Date,
+    activityType?: string,
+    note?: string,
+    documents?: string[],
+    subject?: string,
+    public participantsIds?: number[]
   ) {
-    this._id = Math.floor(Math.random() * 1000);
+    super(id, date, activityType, note, documents, subject);
   }
+}
 
-  get id(): number {
-    return this._id;
-  }
-
-  set id(id: number) {
-    this._id = id;
+export class ActivityResponse extends Activity {
+  constructor(
+    id?: number,
+    date?: Date,
+    activityType?: string,
+    note?: string,
+    documents?: string[],
+    subject?: string,
+    public participants?: Contact[]
+  ) {
+    super(id, date, activityType, note, documents, subject);
   }
 }

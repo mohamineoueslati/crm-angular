@@ -29,7 +29,7 @@
               name="firstName"
               id="firstName"
               required
-              [ngModel]="contact.firstName"
+              [ngModel]="contactRes.firstName"
               #firstName="ngModel"
             />
             <div class="mt-1">
@@ -52,7 +52,7 @@
               name="lastName"
               id="lastName"
               required
-              [ngModel]="contact.lastName"
+              [ngModel]="contactRes.lastName"
               #lastName="ngModel"
             />
             <div class="mt-1">
@@ -74,7 +74,7 @@
               type="email"
               name="email"
               id="email"
-              [ngModel]="contact.email"
+              [ngModel]="contactRes.email"
               email
               #email="ngModel"
             />
@@ -88,7 +88,7 @@
               type="text"
               name="phone"
               id="phone"
-              [ngModel]="contact.phone"
+              [ngModel]="contactRes.phone"
             />
           </div>
         </div>
@@ -103,7 +103,7 @@
               [showClear]="true"
               styleClass="w-full"
               placeholder="Select Contact Owner"
-              [ngModel]="contact.contactOwner"
+              [ngModel]="contactRes.contactOwner?.id"
               autoDisplayFirst="false"
             ></p-dropdown>
           </div>
@@ -116,7 +116,7 @@
               type="text"
               name="company"
               id="company"
-              [ngModel]="contact.company"
+              [ngModel]="contactRes.company"
             />
           </div>
         </div>
@@ -131,7 +131,7 @@
               [showClear]="true"
               styleClass="w-full"
               placeholder="Select Job Title"
-              [ngModel]="contact.jobTitle"
+              [ngModel]="contactRes.jobTitle"
             ></p-dropdown>
           </div>
         </div>
@@ -146,7 +146,7 @@
             type="text"
             name="address"
             id="address"
-            [ngModel]="contact.address?.address"
+            [ngModel]="contactRes.address?.address"
           />
         </div>
 
@@ -159,7 +159,7 @@
               type="text"
               name="country"
               id="country"
-              [ngModel]="contact.address?.country"
+              [ngModel]="contactRes.address?.country"
             />
           </div>
 
@@ -171,7 +171,7 @@
               type="text"
               name="city"
               id="city"
-              [ngModel]="contact.address?.city"
+              [ngModel]="contactRes.address?.city"
             />
           </div>
         </div>
@@ -185,7 +185,7 @@
               type="number"
               name="zip"
               id="zip"
-              [ngModel]="contact.address?.zipCode"
+              [ngModel]="contactRes.address?.zipCode"
             />
           </div>
 
@@ -197,7 +197,7 @@
               type="text"
               name="state"
               id="state"
-              [ngModel]="contact.address?.state"
+              [ngModel]="contactRes.address?.state"
             />
           </div>
         </div>

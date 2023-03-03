@@ -1,54 +1,41 @@
+import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { Contact } from "../models/contact.model";
+import { Observable } from "rxjs";
+import {
+  Contact,
+  ContactRequest,
+  ContactResponse,
+} from "../models/contact.model";
 
 @Injectable({
   providedIn: "root",
 })
 export class ContactService {
-  private _contacts: Contact[] = [];
+  private url = "contacts";
 
-  constructor() {
-    this._contacts = [
-      new Contact(
-        "Mohamed Amine",
-        "Oueslati",
-        "moh@gmail.com",
-        "+21625038057",
-        "Software engineer",
-        "ADS",
-        "Ghassen"
-      ),
-      new Contact(
-        "Ghassen",
-        "Kaaber",
-        "ghassen@gmail.com",
-        "+21626000000",
-        "Software engineer",
-        "ADS",
-        "Mohamed Amine"
-      ),
-    ];
+  constructor(private http: HttpClient) {}
+
+  public getContacts(): Observable<ContactResponse[]> {
+    return this.http.get<ContactResponse[]>(this.url);
   }
 
-  get contacts(): Contact[] {
-    return this._contacts;
+  public getContact(id: number): Observable<ContactResponse> {
+    return this.http.get<ContactResponse>(`${this.url}/${id}`);
   }
 
-  addContact(contact: Contact): void {
-    this._contacts.push(contact);
+  public addContact(contact: ContactRequest): Observable<ContactResponse> {
+    return this.http.post(this.url, contact);
   }
 
-  getContact(id: number): Contact {
-    return this._contacts.find((c) => c.id === id);
+  public updateContact(contact: ContactRequest): Observable<ContactResponse> {
+    return this.http.put<ContactResponse>(this.url, contact);
   }
 
-  updateContact(contact: Contact): void {
-    const idx = this._contacts.findIndex((c) => c.id === contact.id);
-    this._contacts[idx] = contact;
+  public deleteContact(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.url}/${id}`);
   }
 
-  deleteContact(id: number): void {
-    const idx = this._contacts.findIndex((c) => c.id === id);
-    this._contacts.splice(idx, 1);
+  public getContactFullName(contact: Contact): string {
+    return contact ? `${contact.firstName} ${contact.lastName}` : "";
   }
 }

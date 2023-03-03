@@ -1,6 +1,6 @@
-import { Component, EventEmitter, OnInit, Output } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
 import { ConfirmationService } from "primeng/api";
-import { Activity } from "src/app/models/activity.model";
+import { ActivityResponse } from "src/app/models/activity.model";
 import { ActivityService } from "src/app/services/activity.service";
 
 @Component({
@@ -9,7 +9,7 @@ import { ActivityService } from "src/app/services/activity.service";
   styleUrls: ["./list-activity.component.css"],
 })
 export class ListActivityComponent implements OnInit {
-  activities: Activity[] = [];
+  activities: ActivityResponse[] = [];
   cols: { field: string; header: string }[];
 
   constructor(
@@ -25,7 +25,9 @@ export class ListActivityComponent implements OnInit {
       { field: "note", header: "Notes" },
     ];
 
-    this.activities = this.activityService.activities;
+    this.activityService.getAllActivities().subscribe((activities) => {
+      this.activities = activities;
+    });
   }
 
   onDeleteActivity(id: number): void {
@@ -34,8 +36,15 @@ export class ListActivityComponent implements OnInit {
       header: "Delete Confirmation",
       icon: "pi pi-info-circle",
       accept: () => {
-        this.activityService.deleteActivity(id);
+        this.activityService.deleteActivity(id).subscribe((_) => {
+          this.removeActivity(id);
+        });
       },
     });
+  }
+
+  removeActivity(id: number): void {
+    const idx = this.activities.findIndex((a) => a.id === id);
+    this.activities.splice(idx, 1);
   }
 }

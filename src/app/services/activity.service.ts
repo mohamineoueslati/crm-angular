@@ -1,35 +1,35 @@
+import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { Activity } from "../models/activity.model";
+import { Observable } from "rxjs";
+import { ActivityRequest, ActivityResponse } from "../models/activity.model";
 
 @Injectable({
   providedIn: "root",
 })
 export class ActivityService {
-  private _activities: Activity[] = [];
+  private url = "activities";
 
-  constructor() {
-    this._activities = [new Activity(new Date(), "Appel", [], [], [])];
+  constructor(private http: HttpClient) {}
+
+  public getAllActivities(): Observable<ActivityResponse[]> {
+    return this.http.get<ActivityResponse[]>(this.url);
   }
 
-  addActivity(activity: Activity): void {
-    this._activities.push(activity);
+  public getActivity(id: number): Observable<ActivityResponse> {
+    return this.http.get<ActivityResponse>(`${this.url}/${id}`);
   }
 
-  getActivity(id: number): Activity {
-    return this._activities.find((a) => a.id === id);
+  public addActivity(activity: ActivityRequest): Observable<ActivityResponse> {
+    return this.http.post<ActivityResponse>(this.url, activity);
   }
 
-  updateActivity(activity: Activity): void {
-    const idx = this._activities.findIndex((a) => a.id === activity.id);
-    this._activities[idx] = activity;
+  public updateActivity(
+    activity: ActivityRequest
+  ): Observable<ActivityResponse> {
+    return this.http.put<ActivityResponse>(this.url, activity);
   }
 
-  deleteActivity(id: number): void {
-    const idx = this._activities.findIndex((a) => a.id === id);
-    this._activities.splice(idx, 1);
-  }
-
-  get activities(): Activity[] {
-    return this._activities;
+  public deleteActivity(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.url}/${id}`);
   }
 }

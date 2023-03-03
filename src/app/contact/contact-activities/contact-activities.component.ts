@@ -27,11 +27,8 @@ export class ContactActivitiesComponent implements OnInit {
       { field: "note", header: "Notes" },
     ];
 
-    const id = this.route.parent.snapshot.params["id"];
-    if (!isNaN(id)) {
-      this.activities = this.activityService.activities.filter((ac) => {
-        return ac.participants.some((p) => p.id === +id);
-      });
+    const contactId = this.route.parent.snapshot.params["id"];
+    if (!isNaN(contactId)) {
     }
   }
 
