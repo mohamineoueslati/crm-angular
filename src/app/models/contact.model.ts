@@ -39,7 +39,8 @@ export class ContactResponse extends Contact {
     jobTitle?: string,
     company?: string,
     address?: Address,
-    public contactOwner?: ContactResponse
+    public contactOwner?: ContactResponse,
+    public activitiesIds?: number[]
   ) {
     super(id, firstName, lastName, email, phone, jobTitle, company, address);
   }

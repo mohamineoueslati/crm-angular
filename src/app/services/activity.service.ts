@@ -1,4 +1,4 @@
-import { HttpClient } from "@angular/common/http";
+import { HttpClient, HttpParams } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Observable } from "rxjs";
 import { ActivityRequest, ActivityResponse } from "../models/activity.model";
@@ -13,6 +13,13 @@ export class ActivityService {
 
   public getAllActivities(): Observable<ActivityResponse[]> {
     return this.http.get<ActivityResponse[]>(this.url);
+  }
+
+  public getActivitiesByIds(ids: number[]): Observable<ActivityResponse[]> {
+    const params = new HttpParams().append("ids", ids.toString());
+    return this.http.get<ActivityResponse[]>(this.url, {
+      params: params,
+    });
   }
 
   public getActivity(id: number): Observable<ActivityResponse> {

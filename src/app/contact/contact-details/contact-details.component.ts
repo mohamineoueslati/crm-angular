@@ -1,6 +1,6 @@
 import { Component, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
-import { Contact, ContactResponse } from "src/app/models/contact.model";
+import { ContactResponse } from "src/app/models/contact.model";
 import { ContactService } from "src/app/services/contact.service";
 
 @Component({
@@ -22,9 +22,12 @@ export class ContactDetailsComponent implements OnInit {
     this.isEditMode = !isNaN(id);
 
     if (this.isEditMode) {
-      this.contactService
-        .getContact(+id)
-        .subscribe((contact) => (this.contact = contact));
+      this.contactService.getContact(+id).subscribe((contact) => {
+        this.contact = contact;
+        this.contactService.$publishContactActivitiesIds.next(
+          this.contact.activitiesIds
+        );
+      });
     }
   }
 

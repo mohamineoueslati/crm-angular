@@ -1,6 +1,6 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { Observable } from "rxjs";
+import { BehaviorSubject, Observable, Subject } from "rxjs";
 import {
   Contact,
   ContactRequest,
@@ -12,6 +12,9 @@ import {
 })
 export class ContactService {
   private url = "contacts";
+
+  public $publishContactActivitiesIds: BehaviorSubject<number[]> =
+    new BehaviorSubject([]);
 
   constructor(private http: HttpClient) {}
 
