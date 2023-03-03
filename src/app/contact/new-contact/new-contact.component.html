@@ -78,6 +78,13 @@
               email
               #email="ngModel"
             />
+            <div class="mt-1">
+              <p-message
+                *ngIf="(isFormSubmitted || email.dirty) && email.invalid"
+                [text]="getValidationMessages(email, 'Email')"
+                severity="error"
+              ></p-message>
+            </div>
           </div>
 
           <div class="col field">

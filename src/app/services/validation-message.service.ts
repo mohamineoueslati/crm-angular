@@ -15,6 +15,9 @@ export class ValidationMessageService {
             case "required":
               messages.push(`${fieldName} is required`);
               break;
+            case "email":
+              messages.push(`${fieldName} not valid`);
+              break;
           }
         }
       }
