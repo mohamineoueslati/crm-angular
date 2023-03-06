@@ -7,36 +7,45 @@ import { ActivityRequest, ActivityResponse } from "../models/activity.model";
   providedIn: "root",
 })
 export class ActivityService {
-  private url = "activities";
+  private activitiesUrl = "activities";
+  private contactsUrl = "contacts";
 
   constructor(private http: HttpClient) {}
 
   public getAllActivities(): Observable<ActivityResponse[]> {
-    return this.http.get<ActivityResponse[]>(this.url);
+    return this.http.get<ActivityResponse[]>(this.activitiesUrl);
   }
 
   public getActivitiesByIds(ids: number[]): Observable<ActivityResponse[]> {
     const params = new HttpParams().append("ids", ids.toString());
-    return this.http.get<ActivityResponse[]>(this.url, {
+    return this.http.get<ActivityResponse[]>(this.activitiesUrl, {
       params: params,
     });
   }
 
+  public getActivitiesByContactId(
+    contactId: number
+  ): Observable<ActivityResponse[]> {
+    return this.http.get<ActivityResponse[]>(
+      `${this.contactsUrl}/${contactId}/${this.activitiesUrl}`
+    );
+  }
+
   public getActivity(id: number): Observable<ActivityResponse> {
-    return this.http.get<ActivityResponse>(`${this.url}/${id}`);
+    return this.http.get<ActivityResponse>(`${this.activitiesUrl}/${id}`);
   }
 
   public addActivity(activity: ActivityRequest): Observable<ActivityResponse> {
-    return this.http.post<ActivityResponse>(this.url, activity);
+    return this.http.post<ActivityResponse>(this.activitiesUrl, activity);
   }
 
   public updateActivity(
     activity: ActivityRequest
   ): Observable<ActivityResponse> {
-    return this.http.put<ActivityResponse>(this.url, activity);
+    return this.http.put<ActivityResponse>(this.activitiesUrl, activity);
   }
 
   public deleteActivity(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.url}/${id}`);
+    return this.http.delete<void>(`${this.activitiesUrl}/${id}`);
   }
 }

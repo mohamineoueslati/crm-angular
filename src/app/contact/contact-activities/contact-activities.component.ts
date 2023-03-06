@@ -1,22 +1,20 @@
-import { Component, OnDestroy, OnInit } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
+import { ActivatedRoute } from "@angular/router";
 import { ConfirmationService } from "primeng/api";
-import { Subscription } from "rxjs";
 import { ActivityResponse } from "src/app/models/activity.model";
 import { ActivityService } from "src/app/services/activity.service";
-import { ContactService } from "src/app/services/contact.service";
 
 @Component({
   selector: "app-contact-activities",
   templateUrl: "./contact-activities.component.html",
   styleUrls: ["./contact-activities.component.css"],
 })
-export class ContactActivitiesComponent implements OnInit, OnDestroy {
+export class ContactActivitiesComponent implements OnInit {
   activities: ActivityResponse[] = [];
   cols: { field: string; header: string }[];
-  activitiesIdsSubscription: Subscription;
 
   constructor(
-    private contactService: ContactService,
+    private route: ActivatedRoute,
     private activityService: ActivityService,
     private confirmationService: ConfirmationService
   ) {}
@@ -29,16 +27,13 @@ export class ContactActivitiesComponent implements OnInit, OnDestroy {
       { field: "note", header: "Notes" },
     ];
 
-    this.activitiesIdsSubscription =
-      this.contactService.$publishContactActivitiesIds.subscribe((ids) => {
-        this.activityService
-          .getActivitiesByIds(ids)
-          .subscribe((activities) => (this.activities = activities));
-      });
-  }
+    const contactId = +this.route.parent.snapshot.params["id"];
 
-  ngOnDestroy(): void {
-    this.activitiesIdsSubscription.unsubscribe();
+    if (typeof contactId === "number") {
+      this.activityService
+        .getActivitiesByContactId(contactId)
+        .subscribe((activities) => (this.activities = activities));
+    }
   }
 
   onDeleteActivity(id: number): void {

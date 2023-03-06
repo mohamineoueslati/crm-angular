@@ -24,9 +24,6 @@ export class ContactDetailsComponent implements OnInit {
     if (this.isEditMode) {
       this.contactService.getContact(+id).subscribe((contact) => {
         this.contact = contact;
-        this.contactService.$publishContactActivitiesIds.next(
-          this.contact.activitiesIds
-        );
       });
     }
   }
