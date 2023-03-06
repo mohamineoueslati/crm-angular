@@ -99,8 +99,8 @@ export class NewActivityComponent implements OnInit {
 
   private initForm(): void {
     this.activityForm = this.fb.group({
-      date: [new Date(), Validators.required],
-      activityType: ["", Validators.required],
+      date: [null, Validators.required],
+      activityType: [null, Validators.required],
       subject: [""],
       participants: [[]],
       note: [""],
