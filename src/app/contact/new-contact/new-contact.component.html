@@ -85,6 +85,13 @@
                 severity="error"
               ></p-message>
             </div>
+            <div class="mt-1">
+              <p-message
+                *ngIf="emailExists"
+                [text]="'Email already exists'"
+                severity="error"
+              ></p-message>
+            </div>
           </div>
 
           <div class="col field">

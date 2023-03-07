@@ -3,14 +3,11 @@ import { NgForm } from "@angular/forms";
 import { ActivatedRoute, Router } from "@angular/router";
 import { SelectItem } from "primeng/components/common/selectitem";
 import { Address } from "src/app/models/address.model";
-import {
-  Contact,
-  ContactRequest,
-  ContactResponse,
-} from "src/app/models/contact.model";
+import { ContactRequest, ContactResponse } from "src/app/models/contact.model";
 import { ContactService } from "src/app/services/contact.service";
 import { ValidationMessageService } from "src/app/services/validation-message.service";
-import { map } from "rxjs/operators";
+import { catchError, map } from "rxjs/operators";
+import { Observable, of, throwError } from "rxjs";
 
 @Component({
   selector: "app-new-contact",
@@ -25,6 +22,7 @@ export class NewContactComponent implements OnInit {
     "https://cdn.icon-icons.com/icons2/1378/PNG/512/avatardefault_92824.png";
   previewImgSrc = "";
   isEditMode = false;
+  emailExists = false;
   contactReq: ContactRequest = new ContactRequest();
   contactRes: ContactResponse = new ContactResponse();
 
@@ -72,11 +70,12 @@ export class NewContactComponent implements OnInit {
       if (this.isEditMode) {
         this.contactService
           .updateContact(this.contactReq)
-          .subscribe((_) => this.navigateToContactList());
+          .subscribe(this.navigateToContactList);
       } else {
-        this.contactService
-          .addContact(this.contactReq)
-          .subscribe((_) => this.navigateToContactList());
+        this.contactService.addContact(this.contactReq).subscribe({
+          next: this.navigateToContactList,
+          error: this.handleErrors.bind(this),
+        });
       }
     }
   }
@@ -122,7 +121,11 @@ export class NewContactComponent implements OnInit {
     ];
   }
 
-  private navigateToContactList() {
+  private navigateToContactList(_) {
     this.router.navigateByUrl("/contacts/list");
+  }
+
+  handleErrors(err: any) {
+    this.emailExists = err.status === 409;
   }
 }
