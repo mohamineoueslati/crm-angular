@@ -68,12 +68,13 @@ export class NewContactComponent implements OnInit {
       );
 
       if (this.isEditMode) {
-        this.contactService
-          .updateContact(this.contactReq)
-          .subscribe(this.navigateToContactList);
+        this.contactService.updateContact(this.contactReq).subscribe({
+          next: this.navigateToContactList.bind(this),
+          error: this.handleErrors.bind(this),
+        });
       } else {
         this.contactService.addContact(this.contactReq).subscribe({
-          next: this.navigateToContactList,
+          next: this.navigateToContactList.bind(this),
           error: this.handleErrors.bind(this),
         });
       }
@@ -121,7 +122,7 @@ export class NewContactComponent implements OnInit {
     ];
   }
 
-  private navigateToContactList(_) {
+  private navigateToContactList(_: any) {
     this.router.navigateByUrl("/contacts/list");
   }
 
