@@ -6,8 +6,7 @@ import { Address } from "src/app/models/address.model";
 import { ContactRequest, ContactResponse } from "src/app/models/contact.model";
 import { ContactService } from "src/app/services/contact.service";
 import { ValidationMessageService } from "src/app/services/validation-message.service";
-import { catchError, map } from "rxjs/operators";
-import { Observable, of, throwError } from "rxjs";
+import { map } from "rxjs/operators";
 
 @Component({
   selector: "app-new-contact",
