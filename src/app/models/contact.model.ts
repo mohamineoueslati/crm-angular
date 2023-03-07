@@ -1,4 +1,5 @@
 import { Address } from "./address.model";
+import { JobTitle } from "./job-title.enum";
 
 export abstract class Contact {
   constructor(

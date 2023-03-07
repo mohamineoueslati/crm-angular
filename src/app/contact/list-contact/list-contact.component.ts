@@ -1,6 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import { ConfirmationService } from "primeng/api";
 import { Contact, ContactResponse } from "src/app/models/contact.model";
+import { JobTitle } from "src/app/models/job-title.enum";
 import { ContactService } from "src/app/services/contact.service";
 
 @Component({
@@ -49,6 +50,12 @@ export class ListContactComponent implements OnInit {
           .subscribe((_) => this.removeContact(id));
       },
     });
+  }
+
+  jobTitle(e: string): string {
+    if (e in JobTitle) return JobTitle[e];
+
+    return;
   }
 
   private removeContact(id: number): void {

@@ -57,12 +57,17 @@
   <ng-template pTemplate="body" let-contact let-idx="rowIndex">
     <tr>
       <td *ngFor="let col of cols" class="ui-resizable-column">
-        <div *ngIf="col.field != 'contactOwner'; else notContactOwner">
-          {{ contact[col.field] }}
-        </div>
-        <ng-template #notContactOwner>
-          {{ getContactFullName(contact[col.field]) }}
-        </ng-template>
+        <ng-container [ngSwitch]="col.field">
+          <ng-container *ngSwitchCase="'contactOwner'">
+            {{ getContactFullName(contact.contactOwner) }}
+          </ng-container>
+          <ng-container *ngSwitchCase="'jobTitle'">
+            {{ jobTitle(contact.jobTitle) }}
+          </ng-container>
+          <ng-container *ngSwitchDefault>
+            {{ contact[col.field] }}
+          </ng-container>
+        </ng-container>
       </td>
       <td>
         <div class="buttons">
